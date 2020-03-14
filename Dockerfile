@@ -1,6 +1,6 @@
 FROM golang:1.14
 
-WORKDIR /go/src/github.com/MrFuku/simple_web_app
+WORKDIR /go/src/github.com/MrFuku/simple_web_app/chat
 
 ENV GO111MODULE=on
 
