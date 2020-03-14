@@ -1,0 +1,37 @@
+version: '3'
+services:
+  db:
+    image: mysql:5.7
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./sqls/init:/docker-entrypoint-initdb.d
+      - ./my.cnf:/etc/mysql/conf.d/my.cnf
+    ports:
+      - "3306:3306"
+    environment:
+      LANG: ja_JP.UTF-8
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: simple_web_app_database
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+
+  web:
+    build: .
+    tty: true
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      LANG: ja_JP.UTF-8
+      MYSQL_DB_HOST: db
+      MYSQL_DB: simple_web_app_database
+      MYSQL_PORT: 3306
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - .:/go/src/github.com/MrFuku/simple_web_app
+
+volumes:
+  mysql_data:
