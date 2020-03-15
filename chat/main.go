@@ -10,6 +10,7 @@ import (
 	"text/template"
 
 	"github.com/MrFuku/simple_web_app/trace"
+	"github.com/joho/godotenv"
 )
 
 type templateHandler struct {
@@ -26,6 +27,9 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	if err := godotenv.Load("envfiles/.env"); err != nil {
+		log.Fatal("Error loading .env file")
+	}
 	addr := flag.String("addr", ":8080", "アプリケーションのアドレス")
 	flag.Parse()
 	r := newRoom()
