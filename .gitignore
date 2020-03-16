@@ -2,3 +2,5 @@
 tmp/
 
 chat/envfiles/
+
+.DS_Store
