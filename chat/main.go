@@ -45,7 +45,7 @@ func main() {
 	gomniauth.WithProviders(
 		google.New(os.Getenv("GOOGLE_OAUTH_CLIENT_ID"), os.Getenv("GOOGLE_OAUTH_SECRET_KEY"), "http://localhost:8080/auth/callback/google"),
 	)
-	r := newRoom(UseGravatarAvatar)
+	r := newRoom(UseFileSystemAvatar)
 	r.tracer = trace.New(os.Stdout)
 	http.Handle("/chat", MustAuth(&templateHandler{filename: "chat.html"}))
 	http.Handle("/login", &templateHandler{filename: "login.html"})
@@ -63,6 +63,7 @@ func main() {
 	http.Handle("/room", r)
 	http.Handle("/upload", &templateHandler{filename: "upload.html"})
 	http.HandleFunc("/uploader", uploaderHandler)
+	http.Handle("/avatars/", http.StripPrefix("/avatars/", http.FileServer(http.Dir("./avatars"))))
 
 	go r.run()
 
