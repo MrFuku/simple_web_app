@@ -1,16 +1,31 @@
 package main
 
 import (
+	"crypto/md5"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"strings"
-	"crypto/md5"
-	"io"
 
 	"github.com/stretchr/gomniauth"
+	gomniauthcommon "github.com/stretchr/gomniauth/common"
 	"github.com/stretchr/objx"
 )
+
+type ChatUser interface {
+	UniqueID() string
+	AvatarURL() string
+}
+
+type chatUser struct {
+	gomniauthcommon.User
+	uniqueID string
+}
+
+func (u chatUser) UniqueID() string {
+	return u.uniqueID
+}
 
 type authHandler struct {
 	next http.Handler
@@ -67,7 +82,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(m, strings.ToLower(user.Email()))
 		userID := fmt.Sprintf("%x", m.Sum(nil))
 		authCookieValue := objx.New(map[string]interface{}{
-			"userid": userID,
+			"userid":     userID,
 			"name":       user.Name(),
 			"avatar_url": user.AvatarURL(),
 		}).MustBase64()
