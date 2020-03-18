@@ -16,7 +16,11 @@ import (
 	"github.com/stretchr/objx"
 )
 
-var avatars Avatar = UseFileSystemAvatar
+var avatars Avatar = TryAvatars{
+	UseFileSystemAvatar,
+	UseAuthAvatar,
+	UseGravatarAvatar,
+}
 
 type templateHandler struct {
 	once     sync.Once

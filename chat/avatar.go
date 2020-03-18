@@ -14,6 +14,8 @@ type Avatar interface {
 
 type AuthAvatar struct{}
 
+type TryAvatars []Avatar
+
 var UseAuthAvatar AuthAvatar
 
 func (_ AuthAvatar) GetAvatarURL(u ChatUser) (string, error) {
@@ -45,6 +47,15 @@ func (_ FileSystemAvatar) GetAvatarURL(u ChatUser) (string, error) {
 			if match, _ := filepath.Match(u.UniqueID()+"*", file.Name()); match {
 				return "/avatars/" + file.Name(), nil
 			}
+		}
+	}
+	return "", ErrNoAvatarURL
+}
+
+func (a TryAvatars) GetAvatarURL(u ChatUser) (string, error) {
+	for _, avatar := range a {
+		if url, err := avatar.GetAvatarURL(u); err == nil {
+			return url, nil
 		}
 	}
 	return "", ErrNoAvatarURL
